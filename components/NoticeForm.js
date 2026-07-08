@@ -87,7 +87,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-8 border border-[#eae2d5] rounded shadow-md relative">
+    <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-6 sm:p-8 border border-[#eae2d5] rounded shadow-md relative">
       {/* Decorative metal pin in headers of forms for theme consistency */}
       <div className="pushpin bg-[#d97706]" />
 
@@ -99,7 +99,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
 
       {/* Title Field */}
       <div>
-        <label htmlFor="title" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+        <label htmlFor="title" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-2 font-display">
           Notice Title <span className="text-red-500">*</span>
         </label>
         <input
@@ -109,8 +109,8 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
           value={values.title}
           onChange={handleChange}
           placeholder="e.g., Final Exam Timetable Released"
-          className={`w-full px-4 py-2.5 border rounded text-[#2d2824] bg-[#fdfdfd] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#d97706] focus:border-transparent transition duration-150 ${
-            clientErrors.title || serverErrors.title ? 'border-red-300 ring-2 ring-red-100' : 'border-[#eae2d5]'
+          className={`form-input-custom ${
+            clientErrors.title || serverErrors.title ? 'border-red-300 ring-2 ring-red-100' : ''
           }`}
         />
         {(clientErrors.title || serverErrors.title) && (
@@ -122,7 +122,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
 
       {/* Body Field */}
       <div>
-        <label htmlFor="body" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+        <label htmlFor="body" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-2 font-display">
           Notice Content <span className="text-red-500">*</span>
         </label>
         <textarea
@@ -132,8 +132,8 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
           value={values.body}
           onChange={handleChange}
           placeholder="Write the full announcement text here..."
-          className={`w-full px-4 py-2.5 border rounded text-[#2d2824] bg-[#fdfdfd] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#d97706] focus:border-transparent transition duration-150 leading-relaxed ${
-            clientErrors.body || serverErrors.body ? 'border-red-300 ring-2 ring-red-100' : 'border-[#eae2d5]'
+          className={`form-input-custom ${
+            clientErrors.body || serverErrors.body ? 'border-red-300 ring-2 ring-red-100' : ''
           }`}
         />
         {(clientErrors.body || serverErrors.body) && (
@@ -146,7 +146,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Category Field */}
         <div>
-          <label htmlFor="category" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+          <label htmlFor="category" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-2 font-display">
             Category
           </label>
           <select
@@ -154,7 +154,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
             name="category"
             value={values.category}
             onChange={handleChange}
-            className="w-full px-4 py-2.5 border border-[#eae2d5] rounded text-[#2d2824] bg-[#fdfdfd] focus:outline-none focus:ring-2 focus:ring-[#d97706] transition duration-150"
+            className="form-input-custom cursor-pointer"
           >
             <option value="General">General</option>
             <option value="Exam">Exam</option>
@@ -203,7 +203,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Publish Date Field */}
         <div>
-          <label htmlFor="publishDate" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+          <label htmlFor="publishDate" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-2 font-display">
             Publish Date & Time (Optional)
           </label>
           <input
@@ -212,8 +212,8 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
             name="publishDate"
             value={values.publishDate}
             onChange={handleChange}
-            className={`w-full px-4 py-2.5 border rounded text-[#2d2824] bg-[#fdfdfd] focus:outline-none focus:ring-2 focus:ring-[#d97706] transition duration-150 ${
-              clientErrors.publishDate || serverErrors.publishDate ? 'border-red-300 ring-2 ring-red-100' : 'border-[#eae2d5]'
+            className={`form-input-custom ${
+              clientErrors.publishDate || serverErrors.publishDate ? 'border-red-300 ring-2 ring-red-100' : ''
             }`}
           />
           {(clientErrors.publishDate || serverErrors.publishDate) && (
@@ -225,7 +225,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
 
         {/* Image URL Field */}
         <div>
-          <label htmlFor="image" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+          <label htmlFor="image" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-2 font-display">
             Image URL (Optional)
           </label>
           <input
@@ -235,8 +235,8 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
             value={values.image}
             onChange={handleChange}
             placeholder="https://example.com/photo.jpg"
-            className={`w-full px-4 py-2.5 border rounded text-[#2d2824] bg-[#fdfdfd] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#d97706] transition duration-150 ${
-              clientErrors.image || serverErrors.image ? 'border-red-300 ring-2 ring-red-100' : 'border-[#eae2d5]'
+            className={`form-input-custom ${
+              clientErrors.image || serverErrors.image ? 'border-red-300 ring-2 ring-red-100' : ''
             }`}
           />
           {(clientErrors.image || serverErrors.image) && (
@@ -249,16 +249,13 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
 
       {/* Buttons */}
       <div className="flex items-center justify-end space-x-4 pt-5 border-t border-[#eae2d5]">
-        <Link
-          href="/"
-          className="px-5 py-2.5 text-sm font-semibold text-[#5c5246] hover:text-[#b45309] border border-[#eae2d5] hover:border-[#b45309] rounded transition duration-150 bg-white"
-        >
+        <Link href="/" className="btn-secondary text-center">
           Cancel
         </Link>
         <button
           type="submit"
           disabled={isSubmitting}
-          className="px-6 py-2.5 text-sm font-bold text-white bg-[#d97706] hover:bg-[#b45309] active:bg-[#92400e] focus:outline-none focus:ring-2 focus:ring-[#d97706] focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed rounded shadow transition duration-150 font-display"
+          className="btn-primary text-center"
         >
           {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Update Notice' : 'Post Notice'}
         </button>

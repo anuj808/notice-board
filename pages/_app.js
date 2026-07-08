@@ -1,4 +1,5 @@
 import { Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google'
+import Layout from '@/components/Layout'
 import "@/styles/globals.css";
 
 const spaceGrotesk = Space_Grotesk({
@@ -16,7 +17,9 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 export default function App({ Component, pageProps }) {
   return (
     <div className={`${spaceGrotesk.variable} ${plusJakartaSans.variable} min-h-screen flex flex-col`}>
-      <Component {...pageProps} />
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
     </div>
   )
 }

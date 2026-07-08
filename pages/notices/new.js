@@ -22,19 +22,17 @@ export default function NewNotice() {
   }
 
   return (
-    <div className="min-h-screen board-bg py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-2xl mx-auto">
-        <div className="mb-8 text-center sm:text-left">
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-[#3a322b] tracking-tight font-display">
-            Post a New Notice
-          </h1>
-          <p className="text-sm sm:text-base text-[#8c7e70] mt-2 font-medium">
-            Publish a new announcement to the school bulletin board.
-          </p>
-        </div>
-        
-        <NoticeForm mode="create" onSubmit={handleSubmit} />
+    <div className="max-w-2xl mx-auto">
+      <div className="mb-8 text-center sm:text-left">
+        <h1 className="text-3xl font-extrabold text-[#3a322b] tracking-tight font-display">
+          Post a New Notice
+        </h1>
+        <p className="text-sm text-[#8c7e70] mt-2 font-medium">
+          Publish a new announcement to the school bulletin board.
+        </p>
       </div>
+      
+      <NoticeForm mode="create" onSubmit={handleSubmit} />
     </div>
   )
 }
