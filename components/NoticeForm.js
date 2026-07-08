@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 
 /**
@@ -28,27 +28,12 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
     category: initialValues?.category || 'General',
     priority: initialValues?.priority || 'Normal',
     publishDate: formatForInput(initialValues?.publishDate),
+    image: initialValues?.image || '',
   })
 
-  // File upload states
-  const [selectedFile, setSelectedFile] = useState(null)
-  const [previewUrl, setPreviewUrl] = useState(initialValues?.image || '')
-  const [shouldRemoveImage, setShouldRemoveImage] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-
-  // Validation and error states
   const [clientErrors, setClientErrors] = useState({})
   const [serverErrors, setServerErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
-
-  // Revoke object URLs to prevent memory leaks
-  useEffect(() => {
-    return () => {
-      if (previewUrl && previewUrl.startsWith('blob:')) {
-        URL.revokeObjectURL(previewUrl)
-      }
-    }
-  }, [previewUrl])
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -58,37 +43,6 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
     }
     if (serverErrors[name]) {
       setServerErrors((prev) => ({ ...prev, [name]: null }))
-    }
-  }
-
-  const handleFileChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      // Validate file size clientside for early UX feedback
-      if (file.size > 5 * 1024 * 1024) {
-        setClientErrors((prev) => ({ ...prev, image: 'File size exceeds the 5MB limit.' }))
-        return
-      }
-      
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/webp']
-      if (!allowedTypes.includes(file.type)) {
-        setClientErrors((prev) => ({ ...prev, image: 'Only JPEG, PNG, and WEBP formats are allowed.' }))
-        return
-      }
-
-      setClientErrors((prev) => ({ ...prev, image: null }))
-      setSelectedFile(file)
-      setPreviewUrl(URL.createObjectURL(file))
-      setShouldRemoveImage(false)
-    }
-  }
-
-  const handleRemoveImage = () => {
-    setSelectedFile(null)
-    setPreviewUrl('')
-    setShouldRemoveImage(true)
-    if (clientErrors.image) {
-      setClientErrors((prev) => ({ ...prev, image: null }))
     }
   }
 
@@ -114,45 +68,18 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
     if (!validate()) return
 
     setIsSubmitting(true)
-    let finalImageUrl = initialValues?.image || null
-
     try {
-      // 1. First upload the file if a new file was selected
-      if (selectedFile) {
-        setIsUploading(true)
-        const formData = new FormData()
-        formData.append('image', selectedFile)
-
-        const uploadRes = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData,
-        })
-
-        if (!uploadRes.ok) {
-          const errData = await uploadRes.json()
-          throw new Error(errData.error || 'Failed to upload image.')
-        }
-
-        const { url } = await uploadRes.json()
-        finalImageUrl = url
-        setIsUploading(false)
-      } else if (shouldRemoveImage) {
-        finalImageUrl = null
-      }
-
-      // 2. Submit the notice payload with the resulting Blob URL
       const payload = {
         ...values,
         publishDate: values.publishDate ? new Date(values.publishDate).toISOString() : null,
-        image: finalImageUrl,
+        image: values.image.trim() || null,
       }
       await onSubmit(payload)
     } catch (err) {
-      setIsUploading(false)
       if (err.errors) {
         setServerErrors(err.errors)
       } else {
-        setServerErrors({ _global: err.message || 'An unexpected error occurred during saving.' })
+        setServerErrors({ _global: err.message || 'An unexpected error occurred.' })
       }
     } finally {
       setIsSubmitting(false)
@@ -161,7 +88,7 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto bg-white p-8 border border-[#eae2d5] rounded shadow-md relative">
-      {/* Decorative metal pin in headers */}
+      {/* Decorative metal pin in headers of forms for theme consistency */}
       <div className="pushpin bg-[#d97706]" />
 
       {serverErrors._global && (
@@ -296,58 +223,22 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
           )}
         </div>
 
-        {/* File Upload Field */}
+        {/* Image URL Field */}
         <div>
-          <span className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
-            Notice Image (Optional, max 5MB)
-          </span>
-          
-          {previewUrl ? (
-            <div className="relative mt-1 group border border-[#eae2d5] rounded p-2 bg-[#faf6ee] flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={previewUrl}
-                  alt="Selected Preview"
-                  className="w-16 h-16 object-cover rounded border border-[#eae2d5]"
-                />
-                <span className="text-xs font-semibold text-[#8c7e70]">
-                  {selectedFile ? selectedFile.name : 'Current Image'}
-                </span>
-              </div>
-              <button
-                type="button"
-                onClick={handleRemoveImage}
-                className="px-2.5 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 rounded transition font-display border border-transparent hover:border-red-200"
-              >
-                Remove
-              </button>
-            </div>
-          ) : (
-            <div className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-dashed rounded transition duration-150 bg-[#fafaf9] ${
-              clientErrors.image ? 'border-red-300 bg-red-50/10' : 'border-[#eae2d5] hover:border-[#d97706]'
-            }`}>
-              <div className="space-y-1 text-center">
-                <svg className="mx-auto h-10 w-10 text-[#a39580]" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M28 8H12a4 4 0 00-4 4v20a4 4 0 004 4h16m8-8V12a4 4 0 00-4-4h-4M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4-4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-                <div className="flex text-sm text-gray-600 justify-center">
-                  <label htmlFor="file-upload" className="relative cursor-pointer bg-transparent rounded font-bold text-[#d97706] hover:text-[#b45309] focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-[#d97706]">
-                    <span>Upload a file</span>
-                    <input
-                      id="file-upload"
-                      name="image"
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="sr-only"
-                      onChange={handleFileChange}
-                    />
-                  </label>
-                </div>
-                <p className="text-2xs text-[#8c7e70] font-medium">PNG, JPG, WEBP up to 5MB</p>
-              </div>
-            </div>
-          )}
+          <label htmlFor="image" className="block text-xs font-bold uppercase tracking-wider text-[#5c5246] mb-1 font-display">
+            Image URL (Optional)
+          </label>
+          <input
+            type="text"
+            id="image"
+            name="image"
+            value={values.image}
+            onChange={handleChange}
+            placeholder="https://example.com/photo.jpg"
+            className={`w-full px-4 py-2.5 border rounded text-[#2d2824] bg-[#fdfdfd] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#d97706] transition duration-150 ${
+              clientErrors.image || serverErrors.image ? 'border-red-300 ring-2 ring-red-100' : 'border-[#eae2d5]'
+            }`}
+          />
           {(clientErrors.image || serverErrors.image) && (
             <p className="mt-1.5 text-xs text-red-600 font-semibold">
               {clientErrors.image || serverErrors.image}
@@ -366,10 +257,10 @@ export default function NoticeForm({ mode, initialValues, onSubmit }) {
         </Link>
         <button
           type="submit"
-          disabled={isSubmitting || isUploading}
+          disabled={isSubmitting}
           className="px-6 py-2.5 text-sm font-bold text-white bg-[#d97706] hover:bg-[#b45309] active:bg-[#92400e] focus:outline-none focus:ring-2 focus:ring-[#d97706] focus:ring-offset-2 disabled:bg-gray-300 disabled:cursor-not-allowed rounded shadow transition duration-150 font-display"
         >
-          {isSubmitting || isUploading ? 'Uploading...' : mode === 'edit' ? 'Update Notice' : 'Post Notice'}
+          {isSubmitting ? 'Saving...' : mode === 'edit' ? 'Update Notice' : 'Post Notice'}
         </button>
       </div>
     </form>
