@@ -1,3 +1,4 @@
+
 # School Bulletin Board
 
 A Next.js application built with the Pages Router, styled with Tailwind CSS v4, and backed by a MySQL database using Prisma 7. The application replicates a realistic school notice board with paper-note skews and pins, support for scheduling announcements, and full CRUD capabilities with server-side validation.
@@ -64,3 +65,4 @@ The AI assistant, Antigravity, assisted in building this project in the followin
 - **Prisma 7 Compatibility Adaptation:** Successfully navigated Prisma 7's new decoupling rules (where database URLs are no longer allowed inside `schema.prisma` and must be defined in `prisma.config.ts`). Programmed the runtime `lib/prisma.js` singleton client to parse raw connection URLs via Node's `URL` utility into the required `@prisma/adapter-mariadb` driver adapter configuration.
 - **bulletin board CSS Theming:** Authored the CSS-first Tailwind v4 styling system in `globals.css` containing corkboard radial-gradients, Crimson physical pin icons, and randomized paper skews (`paper-note-skew-left`/`paper-note-skew-right`) to give the notice cards a realistic and custom look on hover.
 - **Sanitization & Security Review:** Structured the `lib/validateNotice.js` validation utility and integer URL parsers to ensure no raw, unsanitized inputs reach database queries, relying entirely on Prisma's built-in parameterization to avoid SQL injections.
+
