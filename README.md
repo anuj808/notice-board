@@ -50,19 +50,3 @@ A Next.js application built with the Pages Router, styled with Tailwind CSS v4, 
 
 ---
 
-## 2. Future Improvements
-
-With more time, I would improve **Image Handling & Storage**:
-- **Current Limitation:** The notice cards accept a raw image URL string. This is prone to breaking if URLs go offline, and creates a poor user experience as users have to host images elsewhere first.
-- **Proposed Solution:** Implement secure image file uploads directly from the form. We would add a file-input field, hook it up to a cloud storage API (e.g. AWS S3, Cloudinary, or Vercel Blob), restrict uploads using backend file-type/size checks (e.g., maximum 5MB, jpeg/png only), and store the resulting CDN URL in the database.
-
----
-
-## 3. How AI was Used
-
-The AI assistant, Antigravity, assisted in building this project in the following specific areas:
-- **Framework Initialization & Routing:** Scaffolded the Next.js project ensuring the Pages Router structure was used exclusively with no modern `/app` directory conflicts, utilizing custom imports (`@/*` aliases) correctly.
-- **Prisma 7 Compatibility Adaptation:** Successfully navigated Prisma 7's new decoupling rules (where database URLs are no longer allowed inside `schema.prisma` and must be defined in `prisma.config.ts`). Programmed the runtime `lib/prisma.js` singleton client to parse raw connection URLs via Node's `URL` utility into the required `@prisma/adapter-mariadb` driver adapter configuration.
-- **bulletin board CSS Theming:** Authored the CSS-first Tailwind v4 styling system in `globals.css` containing corkboard radial-gradients, Crimson physical pin icons, and randomized paper skews (`paper-note-skew-left`/`paper-note-skew-right`) to give the notice cards a realistic and custom look on hover.
-- **Sanitization & Security Review:** Structured the `lib/validateNotice.js` validation utility and integer URL parsers to ensure no raw, unsanitized inputs reach database queries, relying entirely on Prisma's built-in parameterization to avoid SQL injections.
-
