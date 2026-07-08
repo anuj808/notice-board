@@ -52,9 +52,9 @@ A Next.js application built with the Pages Router, styled with Tailwind CSS v4, 
 
 ## 2. Future Improvements
 
-With more time, I would improve **Image Handling & Storage**:
-- **Current Limitation:** The notice cards accept a raw image URL string. This is prone to breaking if URLs go offline, and creates a poor user experience as users have to host images elsewhere first.
-- **Proposed Solution:** Implement secure image file uploads directly from the form. We would add a file-input field, hook it up to a cloud storage API (e.g. AWS S3, Cloudinary, or Vercel Blob), restrict uploads using backend file-type/size checks (e.g., maximum 5MB, jpeg/png only), and store the resulting CDN URL in the database.
+With more time, I would improve **Notice Archiving & Engagement Analytics**:
+- **Current Limitation:** Notices are currently either active or deleted. If an event passes, we have to delete the notice to keep the board clean, losing the announcement history.
+- **Proposed Solution:** Implement an archiving status where notices are automatically archived once their publish date passes, filtering them out of the active board. We would also add a "read counter" or student confirmation clicks so staff can track how many students read each notice.
 
 ---
 
